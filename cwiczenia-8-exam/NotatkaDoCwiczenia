@@ -1,0 +1,32 @@
+ 
+stworz sieci dla pierwszego
+polacz sieciami dwa kompy
+ip a - czy ajest
+teraz w PC1:ustaw 2 karte sieciowa dop sieci: o 1 wieksza
+w adresie 
+ip addr add [adres]	+ dev np enp0s8
+potem podnies: ip link set enp0s8 up
+next sprawdz ip addr show enp0s8
+tak samo na PC2 ustawiamy + dev np enp0s3
+brama domyslna: ip rout add default via router
+potem wracamy dop pc1 i musimy przekierowanie ustawic:
+echo 1 > /proc/sys/net/ipv4/ip_forward
+nano /etc/sysctl.d/99-sysctl.conf
+Potem deklarujemy w PC1:
+iptables -t nat -A POSTROUTING -s addres routera -o 
+enp0s3 -j MASQUERADE <--- dzieki temu wychodza adrresy
+juz moze pc2 komunikowac sie z adresem publicznym
+teraz:
+po reebocie nie ma konfigu na pc2
+na pc1 ustawiamy auto konfig
+apt-get install isc-dhcp-server
+systemctl status isc-dhcp-server - sprawdzić.
+szukamy plik konfiguracji uslugi:
+nano /etc/default/isc-dhcp-server dopisz interface
+nano /etc/dhcp/dhcpd.conf
+dodajemy: subnet, netmask, range, option 
+journalctl [-f - dopisujena bierzaco logi]-u isc-dhcp-server
+atomatycznie nadawane adresy od teraz sa. w adresacji od 200-210
+weryfikacja dns: 
+
+dalej cwiczym: 
